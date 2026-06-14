@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Wilderness Survival Challenge</title>
+
+<style>
+   body {
+    margin: 0;
+    font-family: Georgia, serif;
+
+    min-height: 100vh;
+
+    background-image: url(../startbootstrap-clean-blog-gh-pages/assets/img/misty-mountains-with-dramatic-clouds-surrounding-jagged-peaks-and-forest-photo.jpeg);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    color: #2f4f3e;
+    text-align: center;
+}
+
+    .game-box {
+        max-width: 850px;
+        margin: 50px auto;
+        padding: 40px;
+        background-color: #e1e0e0;
+        border: 4px solid #355e4b;
+        border-radius: 25px;
+        box-shadow: 0 8px 22px rgba(0,0,0,0.2);
+    }
+
+    h1 {
+        font-size: 3rem;
+        margin-bottom: 10px;
+        color: #355e4b;
+    }
+
+    .status {
+        font-size: 1.4rem;
+        font-weight: bold;
+        margin: 20px 0;
+    }
+
+    .scenario {
+        background-color: white;
+        border: 3px solid #355e4b;
+        border-radius: 18px;
+        padding: 25px;
+        margin: 30px auto;
+        font-size: 1.35rem;
+        line-height: 1.6;
+    }
+
+    .choices button {
+        display: block;
+        width: 80%;
+        margin: 15px auto;
+        padding: 15px;
+        font-size: 1.1rem;
+        font-family: Georgia, serif;
+        font-weight: bold;
+        color: white;
+        background-color: #355e4b;
+        border: none;
+        border-radius: 25px;
+        cursor: pointer;
+    }
+
+    .choices button:hover {
+        background-color: #243f32;
+    }
+
+    #feedback {
+        font-size: 1.2rem;
+        font-weight: bold;
+        margin-top: 25px;
+        min-height: 50px;
+    }
+
+    .nav-link {
+        display: inline-block;
+        margin-top: 25px;
+        color: #355e4b;
+        text-decoration: none;
+        border: 2px solid #355e4b;
+        padding: 10px 18px;
+        border-radius: 20px;
+        font-weight: bold;
+    }
+
+    .nav-link:hover {
+        background-color: #355e4b;
+        color: white;
+    }
+
+    .restart {
+        background-color: #6b4f3f !important;
+    }
+</style>
+</head>
+
+<body>
+
+<div class="game-box">
+    <h1>Wilderness Survival Challenge</h1>
+    <p>You have 3 lives. The forest has unlimited opportunities to embarrass you.</p>
+
+    <div class="status">
+        Lives: <span id="lives">♡ ♡ ♡</span> |
+        Scenario: <span id="number">1</span>/6
+    </div>
+
+    <div class="scenario" id="scenarioText">
+        Loading scenario...
+    </div>
+
+    <div class="choices" id="choices"></div>
+
+    <p id="feedback"></p>
+
+    <button class="restart" onclick="restartGame()">Restart Game</button>
+
+    <br>
+    <a class="nav-link" href="scratch.html">← Back to Miles & Mountains</a>
+</div>
+
+<script>
+    const scenarios = [
+        {
+            question: "You encounter a hairy creature claiming to be Bigfoot. He asks which trail leads to Canada. What should you do?",
+            choices: [
+                "Politely decline and continue hiking.",
+                "Poke him to see if he's real",
+                "Spend 4 hours discussing conspiracy theories."
+            ],
+            correct: 1,
+            explanation: "Your basically a pro"
+        },
+        {
+            question: "A moose blocks the trail and begins aggressively chewing a bush while maintaining eye contact. What is the safest choice?",
+            choices: [
+                "Give the moose plenty of space.",
+                "Challenge the moose to a race.",
+                "Inform the moose that you aren't scared."
+            ],
+            correct: 0,
+            explanation: "You survived!"
+        },
+        {
+            question: "An old wizard appears and offers a gift: Which do you accept?",
+            choices: [
+                "Unlimited marshmallows",
+                "A detailed map back to the trailhead",
+                "A sword made of spaghetti"
+            ],
+            correct: 2,
+            explanation: "Hazzah!"
+        },
+        {
+            question: "You accidentally spill trail mix. Within seconds, 47 chipmunks surround you. What is the best response?",
+            choices: [
+                "Back away...slowly",
+                "Try negotiating peace terms.",
+                "Declare yourself their king."
+            ],
+            correct: 0,
+            explanation: "Wow. I'm impressed"
+        },
+        {
+            question: "A grizzly bear steps onto the trail wearing a ranger hat and says: Trail maintenance fee. One granola bar. What should you do?",
+            choices: [
+                "Pay the bear tax and slowly back away.",
+                "Inform the bear that taxes are unconstitutional.",
+                "Attempt to audit the bear."
+            ],
+            correct: 1,
+            explanation: "You're a smartie"
+        },
+        {
+            question: "A duck appears. Just a duck.He is staring at you. What do you do?",
+            choices: [
+                "Continue hiking.",
+                "Continue hiking faster.",
+                "Continue hiking while wondering why the duck knows your name."
+            ],
+            correct: 0,
+            explanation: "You speak for the trees"
+        }
+    ];
+
+    let currentScenario = 0;
+    let lives = 3;
+
+    function showScenario() {
+        if (lives <= 0) {
+            document.getElementById("scenarioText").textContent =
+                "Game Over. The wilderness has respectfully asked you to leave. (Bigfoot watched the entire thing...he's disappointed)";
+            document.getElementById("choices").innerHTML = "";
+            document.getElementById("feedback").textContent =
+                "Game Over. The wilderness has respectfully asked you to leave. (Bigfoot watched the entire thing...he's disappointed)";
+            return;
+        }
+
+        if (currentScenario >= scenarios.length) {
+            document.getElementById("scenarioText").textContent =
+                "YYou made it back to civilization with all your limbs, most of your dignity, and a great story to tell.";
+            document.getElementById("choices").innerHTML = "";
+            document.getElementById("feedback").textContent =
+                "You made it back to civilization with all your limbs, most of your dignity, and a great story to tell.";
+            return;
+        }
+
+        const scenario = scenarios[currentScenario];
+
+        document.getElementById("scenarioText").textContent = scenario.question;
+        document.getElementById("number").textContent = currentScenario + 1;
+        document.getElementById("feedback").textContent = "";
+
+        const choicesDiv = document.getElementById("choices");
+        choicesDiv.innerHTML = "";
+
+        scenario.choices.forEach((choice, index) => {
+            const button = document.createElement("button");
+            button.textContent = choice;
+            button.onclick = () => checkAnswer(index);
+            choicesDiv.appendChild(button);
+        });
+
+        updateLives();
+    }
+
+    function checkAnswer(selectedIndex) {
+        const scenario = scenarios[currentScenario];
+
+        if (selectedIndex === scenario.correct) {
+            document.getElementById("feedback").textContent = scenario.explanation;
+        } else {
+            lives--;
+            document.getElementById("feedback").textContent =
+                "Not the safest choice. You lost a life.";
+        }
+
+        updateLives();
+
+        currentScenario++;
+
+        setTimeout(showScenario, 1600);
+    }
+
+    function updateLives() {
+        let hearts = "";
+
+        for (let i = 0; i < lives; i++) {
+            hearts += "❤️ ";
+        }
+
+        document.getElementById("lives").textContent = hearts;
+    }
+
+    function restartGame() {
+        currentScenario = 0;
+        lives = 3;
+        showScenario();
+    }
+
+    showScenario();
+</script>
+
+</body>
+</html>
